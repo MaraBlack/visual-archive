@@ -1,0 +1,21 @@
+:host {
+    display: block;
+}
+
+.font-inter {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.font-space {
+    font-family: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.border {
+    border-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Make sure large framed area centers image and keeps padding */
+.artwork-frame {
+    background: #efece8;
+    padding: 3rem;
+}

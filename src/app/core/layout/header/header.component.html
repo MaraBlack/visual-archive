@@ -1,0 +1,29 @@
+<header
+    class="sticky top-0 z-50 w-full py-6 px-4 md:px-10 lg:px-20 flex items-center justify-between bg-white border-b border-black/5">
+    <a routerLink="/"
+        class=" text-[0.75rem] sm:text-[0.75rem] md:text-[0.75rem] lg:text-[0.75rem] xl:text-[0.9rem] 2xl:text-[1.2rem] font-space lowercase text-lg">
+        maria lichi
+    </a>
+
+    <!-- Mobile burger button -->
+    <button (click)="toggleMenu()" aria-label="Toggle menu" [attr.aria-expanded]="menuOpen"
+        class="md:hidden p-2 text-2xl">
+        <span *ngIf="!menuOpen">☰</span>
+        <span *ngIf="menuOpen">✕</span>
+    </button>
+
+    <!-- Desktop nav -->
+    <nav class="hidden md:flex gap-6 items-center">
+        <a *ngFor="let item of nav" [routerLink]="item.path" routerLinkActive="text-[#2563EB] font-semibold"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="text-[0.65rem] sm:text-[0.65rem] md:text-[0.65rem] lg:text-[0.65rem] xl:text-[0.75rem] 2xl:text-[0.85rem] uppercase tracking-[0.2em] font-inter text-black/50 hover:text-[#2563EB]">{{
+            item.label }}</a>
+    </nav>
+
+    <!-- Mobile full-screen menu -->
+    <div *ngIf="menuOpen"
+        class="fixed inset-0 bg-white/95 z-50 flex flex-col items-center justify-center gap-8 md:hidden">
+        <a *ngFor="let item of nav" [routerLink]="item.path" (click)="closeMenu()"
+            class="text-[1.25rem] uppercase tracking-[0.2em] font-inter text-black/80">{{ item.label }}</a>
+    </div>
+</header>

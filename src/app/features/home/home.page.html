@@ -1,0 +1,22 @@
+<header class="min-h-[16vh] h-full flex flex-col items-center justify-center text-center px-4 md:px-10 lg:px-20">
+    <h1 class="font-space font-[300] lowercase text-[5vw] sm:text-[6vw] md:text-[4vw] lg:text-[3vw] leading-[0.9]">
+        maria / the visual archive</h1>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 md:px-10 lg:px-20">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-[5vh] gap-8">
+        <ng-container *ngFor="let c of categories">
+            <a [routerLink]="['/collection']" [queryParams]="{ filter: c.key }" class="group block">
+                <div class="overflow-hidden rounded-sm">
+                    <img [src]="c.img" alt="{{c.title}}"
+                        class="w-full h-[48vh] object-cover grayscale opacity-80 transition-all duration-[1000ms] ease-out group-hover:grayscale-0 group-hover:opacity-100" />
+                </div>
+                <div class="mt-4">
+                    <div
+                        class="text-[0.65rem] sm:text-[0.65rem] md:text-[0.65rem] lg:text-[0.65rem] xl:text-[0.75rem] 2xl:text-[0.85rem] uppercase tracking-[0.2em] font-inter text-black/40 group-hover:text-[#2563EB]">
+                        {{ c.title }}</div>
+                </div>
+            </a>
+        </ng-container>
+    </div>
+</main>

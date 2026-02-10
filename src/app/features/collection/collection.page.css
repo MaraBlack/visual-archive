@@ -1,0 +1,23 @@
+:host {
+    display: block;
+}
+
+.group img {
+    transition: transform 600ms ease-out, filter 1000ms ease-out, opacity 1000ms ease-out;
+}
+
+.group:hover img {
+    transform: scale(1.02);
+}
+
+.font-inter {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.filter-btn {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.filter-btn.active {
+    color: #2563EB;
+}

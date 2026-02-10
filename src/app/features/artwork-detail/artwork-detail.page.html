@@ -1,0 +1,76 @@
+<section class="w-full h-full py-12 px-4 md:px-10 lg:px-20 text-black">
+    <div class="max-w-screen-xl mx-auto ">
+        <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr_340px] gap-8 items-start min-h-[70vh]">
+
+            <!-- Left metadata (desktop) -->
+            <aside class="hidden lg:flex flex-col gap-2 text-left h-full justify-center ">
+                <div
+                    class="font-inter uppercase tracking-[0.12em] text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg">
+                    {{ item?.title }}</div>
+                <div
+                    class="font-inter uppercase tracking-[0.12em] text-black/40 text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg mb-8">
+                    artwork title</div>
+                <div
+                    class="font-inter uppercase tracking-[0.12em] text-sm md:text-base lg:text-base xl:text-lg 2xl:text-xl">
+                    {{ item?.key }}</div>
+                <div
+                    class="font-inter uppercase tracking-[0.12em] text-black/40 mb-8 text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg">
+                    medium</div>
+                <div
+                    class="font-inter uppercase tracking-[0.12em] text-black/80 text-sm md:text-base lg:text-base xl:text-lg 2xl:text-xl">
+                    {{ item?.year }}</div>
+                <div
+                    class="font-inter uppercase tracking-[0.12em] text-black/40 mb-8 text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg">
+                    year</div>
+            </aside>
+
+            <!-- Center framed image -->
+            <div class="w-full h-full flex items-center justify-center align-middle">
+                <div class="p-8 md:p-12 lg:p-16 w-full max-w-[720px] flex items-center justify-center">
+                    <img [src]="item?.img" [alt]="item?.title" class="w-full max-h-[70vh] object-contain" />
+                </div>
+            </div>
+
+            <!-- Right description (desktop) -->
+            <aside class="hidden lg:flex flex-col gap-2 h-full justify-center">
+                <div class="text-black/40 text-sm md:text-base lg:text-base xl:text-lg 2xl:text-xl">
+                    <p class="mb-4">A study in natural forms and textures, documenting the ephemeral beauty of dried
+                        botanicals. Shot on medium format film to capture subtle gradations and organic detail.</p>
+                    <p class="text-black/40">Additional info or credits can go here. Keep description concise and muted.
+                    </p>
+                </div>
+            </aside>
+
+            <!-- Mobile metadata above image -->
+            <div class="lg:hidden col-span-1 mb-6">
+                <div class="font-inter uppercase tracking-[0.12em] text-black/60 text-sm md:text-base lg:text-lg">{{
+                    item?.key }} • {{
+                    item?.year }}</div>
+                <h2 class="font-space lowercase text-xl md:text-2xl mt-2">{{ item?.title }}</h2>
+                <div class="text-black/40 text-sm md:text-base lg:text-lg my-8">
+                    <p class="mb-4">A study in natural forms and textures, documenting the ephemeral beauty of dried
+                        botanicals. Shot on medium format film to capture subtle gradations and organic detail.</p>
+                    <p class="text-black/40">Additional info or credits can go here. Keep description concise and muted.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer nav: previous / back / next -->
+        <div class="mt-10 border-t border-black/5 pt-6">
+            <div class="flex items-center justify-between max-w-screen-xl mx-auto px-2">
+                <button (click)="prev()" [disabled]="index===0"
+                    class="text-black/60 text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg md:text-base">←
+                    previous</button>
+                <button (click)="goBack()"
+                    class="text-black/40 text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg md:text-base tracking-[0.3em] uppercase">Back
+                    to
+                    collection</button>
+                <button (click)="next()" [disabled]="index===itemsForKey.length-1"
+                    class="text-black/60 text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lgmd:text-base">next
+                    →</button>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,12 @@
+/* Header local styles - Tailwind classes preferred in templates */
+:host {
+    display: block;
+}
+
+.font-space {
+    font-family: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.font-inter {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}

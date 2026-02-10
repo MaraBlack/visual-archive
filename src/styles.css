@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global design variables (from design-notes-general.md) */
+:root {
+    --accent: #2563EB;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Make the app fill the viewport so flex layout can push the footer to the bottom */
+html,
+body,
+app-root {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+}
+
+/* Minimal font fallback classes (components use Tailwind utilities primarily) */
+.font-space {
+    font-family: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.font-inter {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
