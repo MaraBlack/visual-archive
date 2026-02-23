@@ -2,7 +2,7 @@ import { Component, HostListener, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule, ParamMap } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ITEMS } from '../collection/collection-data';
+import { ITEMS } from '../collection/mock/collection-data';
 
 @Component({
     selector: 'app-artwork-detail',
@@ -16,14 +16,17 @@ export class ArtworkDetailPage implements OnDestroy {
     itemsForKey: any[] = [];
     index = 0;
     sub: Subscription;
+    contextKey: string = 'all';
 
     constructor(private route: ActivatedRoute, private router: Router) {
         this.sub = this.route.paramMap.subscribe((pm: ParamMap) => {
-            const key = pm.get('key');
+            const key = (pm.get('key') || '').trim().toLowerCase();
             const id = pm.get('id');
+            this.contextKey = key || 'all';
+
             // Use the key param to determine the current filtered set; fall back to all items
-            if (key && key !== 'all') {
-                this.itemsForKey = ITEMS.filter(i => i.key === key);
+            if (this.contextKey !== 'all') {
+                this.itemsForKey = ITEMS.filter(i => i.key === this.contextKey);
             } else {
                 this.itemsForKey = ITEMS.slice();
             }
@@ -31,7 +34,7 @@ export class ArtworkDetailPage implements OnDestroy {
             this.index = this.itemsForKey.findIndex(i => i.id === id);
             if (this.index === -1) {
                 // not found -> go back to collection
-                this.router.navigate(['/collection']);
+                this.router.navigate(['/collection', 'all']);
                 return;
             }
             this.item = this.itemsForKey[this.index];
@@ -58,11 +61,11 @@ export class ArtworkDetailPage implements OnDestroy {
 
     navigateToIndex() {
         const it = this.itemsForKey[this.index];
-        this.router.navigate(['/collection', it.key, it.id]);
+        this.router.navigate(['/collection', this.contextKey, it.id]);
     }
 
     goBack() {
-        this.router.navigate(['/collection']);
+        this.router.navigate(['/collection', this.contextKey || 'all']);
     }
 
     @HostListener('window:keydown', ['$event'])

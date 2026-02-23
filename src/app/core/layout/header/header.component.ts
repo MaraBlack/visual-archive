@@ -14,7 +14,6 @@ export class HeaderComponent {
         { label: 'HOME', path: '/' },
         { label: 'COLLECTION', path: '/collection' },
         { label: 'ABOUT', path: '/about' },
-        { label: 'STYLE', path: '/style' },
     ];
     menuOpen = false;
 
