@@ -1,24 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { CollectionItem, PagedResult } from '../../../core/models/models';
 
-export type CollectionKey = 'all' | 'digital' | 'photography' | 'sketchbook' | string;
-
-export interface CollectionItem {
-  id: string;
-  key: string;
-  year: number;
-  title: string;
-  img: string;
-}
-
-export interface PagedResult<T> {
-  items: T[];
-  page: number;
-  pageSize: number;
-  total: number;
-  hasMore: boolean;
-}
 
 @Injectable({ providedIn: 'root' })
 export class CollectionService {

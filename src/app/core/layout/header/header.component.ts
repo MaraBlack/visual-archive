@@ -11,9 +11,9 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent {
     nav = [
-        { label: 'HOME', path: '/' },
-        { label: 'COLLECTION', path: '/collection' },
-        { label: 'ABOUT', path: '/about' },
+        { label: 'HOME', path: '/', exact: true },
+        { label: 'COLLECTION', path: '/collection', exact: false },
+        { label: 'ABOUT', path: '/about', exact: true },
     ];
     menuOpen = false;
 

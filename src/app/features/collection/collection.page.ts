@@ -2,7 +2,9 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CollectionItem, CollectionService } from './services/collection.service';
+import { CollectionService } from './services/collection.service';
+import { CollectionItem } from '../../core/models/models';
+
 
 @Component({
     selector: 'app-collection',
