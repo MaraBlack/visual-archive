@@ -30,6 +30,9 @@ export class CollectionPage {
   @ViewChild('infiniteAnchor') infiniteAnchor?: ElementRef<HTMLDivElement>;
   private intersectionObserver?: IntersectionObserver;
 
+  @ViewChild('scrollSection') scrollSection?: ElementRef<HTMLElement>;
+  scrollProgress = 0; // 0–100
+
   // Request context to ignore stale responses
   private requestContext = 0;
 
@@ -51,6 +54,8 @@ export class CollectionPage {
   // progress bar
   total = 0;
   loadedCount = 0;
+
+
 
   constructor() {
     this.loadKeys();
@@ -88,6 +93,8 @@ export class CollectionPage {
     this.loadedCount = this.items.length;
     this.hasMore = this.loadedCount < this.total;
   }
+
+
 
   // Load all items for a filter (one Firestore call)
   private loadForKey(key: string) {

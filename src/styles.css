@@ -18,6 +18,7 @@ app-root {
 
 body {
   margin: 0;
+  overflow-x: clip;
 }
 
 /* Minimal font fallback classes (components use Tailwind utilities primarily) */

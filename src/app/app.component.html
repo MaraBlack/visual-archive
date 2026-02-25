@@ -1,7 +1,9 @@
-<div class="min-h-screen flex flex-col overflow-hidden">
-  <app-header></app-header>
+<div class="min-h-screen flex flex-col">
+  <div class="sticky top-0 z-50 bg-white">
+    <app-header></app-header>
+  </div>
 
-  <main class="min-h-[60vh] flex-1 overflow-hidden">
+  <main class="min-h-[60vh] flex-1">
     <router-outlet></router-outlet>
   </main>
 
