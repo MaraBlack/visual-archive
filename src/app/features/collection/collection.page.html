@@ -1,12 +1,10 @@
-<section class="w-full py-8 px-4 md:px-10 lg:px-20 text-black">
+<section #scrollSection class="w-full py-8 px-4 md:px-10 lg:px-20 text-black">
   <div class="max-w-screen-xl mx-auto">
     <!-- Sticky header -->
     <header class="pb-4 sticky top-[90px] md:top-[76px] z-10 bg-white">
-      <!-- Title -->
-      <h1 class="typ-page-title my-4">Collection</h1>
+      <h1 class="typ-page-title mb-4">Collection</h1>
 
-      <!-- Filters -->
-      <div class="flex items-center gap-3 my-4">
+      <div class="flex items-center gap-3 mb-3">
         <button
           (click)="setFilter('all')"
           class="filter-btn typ-filter"
@@ -24,11 +22,11 @@
         </button>
       </div>
 
-      <!-- Progress bar under title -->
+      <!-- progress bar now driven by scrollProgress -->
       <div class="my-4 h-[2px] w-full bg-black/5">
         <div
-          class="h-full bg-[#2563EB] transition-[width] duration-300"
-          [style.width.%]="total > 0 ? (loadedCount / total) * 100 : 0"
+          class="h-full bg-[#2563EB] transition-[width] duration-200"
+          [style.width.%]="scrollProgress"
         ></div>
       </div>
     </header>

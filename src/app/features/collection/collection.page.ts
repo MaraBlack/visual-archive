@@ -5,6 +5,7 @@ import {
   ViewChild,
   inject,
   NgZone,
+  HostListener,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -32,6 +33,7 @@ export class CollectionPage {
 
   @ViewChild('scrollSection') scrollSection?: ElementRef<HTMLElement>;
   scrollProgress = 0; // 0–100
+  private lastScrollY = 0;
 
   // Request context to ignore stale responses
   private requestContext = 0;
@@ -56,6 +58,45 @@ export class CollectionPage {
   loadedCount = 0;
 
 
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    const doc = document.documentElement;
+
+    const scrollTop =
+      window.pageYOffset || doc.scrollTop || 0;
+
+    const viewportHeight =
+      window.innerHeight || doc.clientHeight || 0;
+
+    const scrollHeight = doc.scrollHeight;
+
+    const maxScrollable = Math.max(scrollHeight - viewportHeight, 1);
+
+    // raw progress just from scroll
+    const raw = (scrollTop / maxScrollable) * 100;
+
+    // are we going down or up?
+    const goingDown = scrollTop >= this.lastScrollY;
+
+    // cap: don't show more than what we've actually loaded (optional)
+    const loadCap =
+      this.total > 0 ? (this.loadedCount / this.total) * 100 : 100;
+
+    let next = raw;
+
+    // never exceed loaded content
+    next = Math.min(next, loadCap);
+
+    if (goingDown) {
+      // while going down, never let progress go backwards
+      this.scrollProgress = Math.max(this.scrollProgress, next);
+    } else {
+      // when going up, allow it to go backwards
+      this.scrollProgress = Math.min(this.scrollProgress, next);
+    }
+
+    this.lastScrollY = scrollTop;
+  }
 
   constructor() {
     this.loadKeys();
@@ -93,8 +134,6 @@ export class CollectionPage {
     this.loadedCount = this.items.length;
     this.hasMore = this.loadedCount < this.total;
   }
-
-
 
   // Load all items for a filter (one Firestore call)
   private loadForKey(key: string) {
