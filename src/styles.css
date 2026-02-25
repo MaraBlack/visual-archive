@@ -1,8 +1,9 @@
+@import "./styles/button.css";
+@import "./styles/typography.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import "../app/styles/button.css";
 
 html {
   scroll-behavior: smooth;

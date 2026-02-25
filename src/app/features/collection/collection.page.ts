@@ -1,102 +1,185 @@
-// collection.page.ts (only key changes)
-import { Component, DestroyRef, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  ViewChild,
+  inject,
+  NgZone,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CollectionService } from '../../core/services/collection.service';
 import { CollectionItem } from '../../core/models/models';
-import { DocumentSnapshot, DocumentData } from 'firebase/firestore';
+import { CollectionService } from '../../core/services/collection.service';
 
 @Component({
-    selector: 'app-collection',
-    standalone: true,
-    imports: [CommonModule, RouterModule],
-    templateUrl: './collection.page.html',
-    styleUrls: ['./collection.page.css'],
+  selector: 'app-collection',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  templateUrl: './collection.page.html',
+  styleUrls: ['./collection.page.css'],
 })
 export class CollectionPage {
-    private readonly route = inject(ActivatedRoute);
-    private readonly router = inject(Router);
-    private readonly destroyRef = inject(DestroyRef);
-    private readonly collectionService = inject(CollectionService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly collectionService = inject(CollectionService);
+  private readonly zone = inject(NgZone);
 
-    private requestContext = 0;
+  // Infinite scroll sentinel
+  @ViewChild('infiniteAnchor') infiniteAnchor?: ElementRef<HTMLDivElement>;
+  private intersectionObserver?: IntersectionObserver;
 
-    items: CollectionItem[] = [];
-    selectedKey: string = 'all';
-    keys: string[] = [];
+  // Request context to ignore stale responses
+  private requestContext = 0;
 
-    pageSize = 9;
-    hasMore = true;
-    loading = false;
-    error: string | null = null;
+  // State
+  keys: string[] = [];
+  selectedKey: string = 'all';
 
-    cursor: DocumentSnapshot<DocumentData> | null = null;
+  // all items for current filter (from Firestore)
+  private allItems: CollectionItem[] = [];
 
-    constructor() {
-        this.loadKeys();
+  // items currently visible in the grid
+  items: CollectionItem[] = [];
 
-        this.route.paramMap
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((params) => {
-                const key = (params.get('key') || '').trim().toLowerCase();
-                this.selectedKey = !key || key === 'all' ? 'all' : key;
-                this.resetAndLoad();
+  pageSize = 9;
+  hasMore = true;
+  loading = false;
+  error: string | null = null;
+
+  // progress bar
+  total = 0;
+  loadedCount = 0;
+
+  constructor() {
+    this.loadKeys();
+
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const key = (params.get('key') || '').trim().toLowerCase();
+        this.selectedKey = !key || key === 'all' ? 'all' : key;
+        this.loadForKey(this.selectedKey);
+      });
+  }
+
+  // Filter click
+  setFilter(key: string) {
+    const normalized = (key || '').trim().toLowerCase();
+    const next = !normalized || normalized === 'all' ? 'all' : normalized;
+    this.router.navigate(['/collection', next]);
+  }
+
+  // Called by infinite scroll sentinel
+  loadMoreChunk() {
+    if (this.loading || !this.hasMore) return;
+
+    const start = this.loadedCount;
+    const end = start + this.pageSize;
+    const nextSlice = this.allItems.slice(start, end);
+
+    if (nextSlice.length === 0) {
+      this.hasMore = false;
+      return;
+    }
+
+    this.items = [...this.items, ...nextSlice];
+    this.loadedCount = this.items.length;
+    this.hasMore = this.loadedCount < this.total;
+  }
+
+  // Load all items for a filter (one Firestore call)
+  private loadForKey(key: string) {
+    this.requestContext += 1;
+    const ctx = this.requestContext;
+
+    this.loading = true;
+    this.error = null;
+    this.items = [];
+    this.allItems = [];
+    this.total = 0;
+    this.loadedCount = 0;
+    this.hasMore = true;
+
+    const effectiveKey = key === 'all' ? null : key;
+
+    this.collectionService
+      .getItemsForKey(effectiveKey)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (all) => {
+          if (ctx !== this.requestContext) return;
+
+          this.allItems = all;
+          this.total = all.length;
+          this.items = [];
+          this.loadedCount = 0;
+          this.hasMore = this.total > 0;
+
+          // load first chunk into the grid
+          this.loading = false;
+          this.loadMoreChunk();
+
+          // set up infinite scroll after first render
+          setTimeout(() => this.setupObserver(), 0);
+        },
+        error: (err) => {
+          console.error('[Collection] Failed to load items', err);
+          if (ctx !== this.requestContext) return;
+          this.loading = false;
+          this.error = 'Failed to load items.';
+          this.hasMore = false;
+        },
+      });
+  }
+
+  private loadKeys() {
+    this.collectionService
+      .getKeys()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (keys) => (this.keys = keys),
+        error: () => (this.keys = []),
+      });
+  }
+
+  // IntersectionObserver for infinite scroll
+  private setupObserver() {
+    if (!this.infiniteAnchor) return;
+
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+    }
+
+    this.zone.runOutsideAngular(() => {
+      this.intersectionObserver = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (entry.isIntersecting) {
+            this.zone.run(() => {
+              if (!this.loading && this.hasMore) {
+                this.loadMoreChunk();
+              }
             });
+          }
+        },
+        {
+          root: null,
+          rootMargin: '0px 0px 200px 0px',
+          threshold: 0,
+        }
+      );
+
+      if (this.infiniteAnchor?.nativeElement) {
+        this.intersectionObserver.observe(this.infiniteAnchor.nativeElement);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
     }
-
-    setFilter(key: string) {
-        const normalized = (key || '').trim().toLowerCase();
-        const next = !normalized || normalized === 'all' ? 'all' : normalized;
-        this.router.navigate(['/collection', next]);
-    }
-
-    loadMore() {
-        if (this.loading || !this.hasMore) return;
-
-        const ctx = this.requestContext;
-        this.loading = true;
-        this.error = null;
-
-        const key = this.selectedKey === 'all' ? null : this.selectedKey;
-
-        this.collectionService
-            .getItemsPage({ key, pageSize: this.pageSize, cursor: this.cursor })
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe({
-                next: (res) => {
-                    if (ctx !== this.requestContext) return;
-                    this.items = [...this.items, ...res.items];
-                    this.cursor = res.cursor;
-                    this.hasMore = res.hasMore;
-                    this.loading = false;
-                },
-                error: (err) => {
-                    if (ctx !== this.requestContext) return;
-                    console.error('[Collection] loadMore error', err);
-                    this.loading = false;
-                    this.error = 'Failed to load items.';
-                },
-            });
-    }
-
-    private resetAndLoad() {
-        this.requestContext += 1;
-        this.items = [];
-        this.cursor = null;
-        this.hasMore = true;
-        this.loading = false;
-        this.error = null;
-        this.loadMore();
-    }
-
-    private loadKeys() {
-        this.collectionService
-            .getKeys()
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe({
-                next: (keys) => (this.keys = keys),
-                error: () => (this.keys = []),
-            });
-    }
+  }
 }

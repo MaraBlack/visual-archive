@@ -7,36 +7,12 @@
       <aside
         class="hidden lg:flex flex-col gap-2 text-left h-full justify-center"
       >
-        <div
-          class="font-inter uppercase tracking-[0.12em] text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg"
-        >
-          {{ item?.title }}
-        </div>
-        <div
-          class="font-inter uppercase tracking-[0.12em] text-black/30 text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg mb-8"
-        >
-          artwork title
-        </div>
-        <div
-          class="font-inter uppercase tracking-[0.12em] text-sm md:text-base lg:text-base xl:text-lg 2xl:text-xl"
-        >
-          {{ item?.key }}
-        </div>
-        <div
-          class="font-inter uppercase tracking-[0.12em] text-black/30 mb-8 text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg"
-        >
-          medium
-        </div>
-        <div
-          class="font-inter uppercase tracking-[0.12em] text-black/80 text-sm md:text-base lg:text-base xl:text-lg 2xl:text-xl"
-        >
-          {{ item?.date | date : 'MM yyyy' }}
-        </div>
-        <div
-          class="font-inter uppercase tracking-[0.12em] text-black/30 mb-8 text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg"
-        >
-          date
-        </div>
+        <div class="typ-meta-value">{{ item?.title }}</div>
+        <div class="typ-meta-label mb-8">artwork title</div>
+        <div class="typ-meta-value">{{ item?.key }}</div>
+        <div class="typ-meta-label mb-8">medium</div>
+        <div class="typ-meta-value">{{ item?.date | date : 'MM yyyy' }}</div>
+        <div class="typ-meta-label mb-8">date</div>
       </aside>
 
       <!-- Center framed image -->
@@ -98,23 +74,16 @@
       <div
         class="flex items-center justify-between max-w-screen-xl mx-auto px-2"
       >
-        <button
-          (click)="prev()"
-          [disabled]="index===0"
-          class="text-black/60 text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg md:text-base disabled:text-black/30 disabled:opacity-60 disabled:cursor-not-allowed"
-        >
+        <button (click)="prev()" [disabled]="index===0" class="btn-ghost-lower">
           — previous
         </button>
-        <button
-          (click)="goBack()"
-          class="text-black/40 hover:text-black text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg md:text-base tracking-[0.3em] uppercase"
-        >
+        <button (click)="goBack()" class="btn-secondary">
           Back to collection
         </button>
         <button
           (click)="next()"
           [disabled]="index===itemsForKey.length-1"
-          class="text-black/60 text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg md:text-base disabled:text-black/30 disabled:opacity-60 disabled:cursor-not-allowed"
+          class="btn-ghost-lower"
         >
           next —
         </button>

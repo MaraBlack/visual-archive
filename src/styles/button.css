@@ -1,0 +1,54 @@
+/* =======================
+   BUTTON SYSTEM
+   ======================= */
+
+/* PRIMARY – main action */
+.btn-primary {
+  @apply inline-flex items-center justify-center
+    px-6 py-2 rounded-sm
+    text-xs md:text-sm font-inter uppercase tracking-[0.25em]
+    border border-black/20
+    hover:bg-black hover:text-white
+    transition-all cursor-pointer
+    disabled:text-black/30 disabled:opacity-60 disabled:cursor-not-allowed;
+}
+
+/* SECONDARY – neutral action */
+.btn-secondary {
+  @apply inline-flex items-center justify-center
+    px-6 py-2 rounded-sm
+    text-xs md:text-sm font-inter uppercase tracking-[0.25em]
+    text-black/60 hover:text-[#2563EB]
+    transition-colors cursor-pointer
+    disabled:text-black/40 disabled:opacity-60 disabled:cursor-not-allowed;
+}
+
+/* GHOST – uppercase text button (general links, lightweight) */
+.btn-ghost {
+  @apply text-black/60 hover:text-[#2563EB]
+    text-xs md:text-sm font-inter uppercase tracking-[0.15em]
+    transition-colors cursor-pointer
+    disabled:text-black/40 disabled:opacity-60 disabled:cursor-not-allowed;
+}
+
+/* GHOST-LOWER – lowercase version (prev / next in artwork page) */
+.btn-ghost-lower {
+  @apply text-black/60 hover:text-[#2563EB]
+    text-xs md:text-sm font-space lowercase tracking-wide
+    transition-colors cursor-pointer disabled:text-black/30
+    disabled:opacity-60 disabled:cursor-not-allowed;
+  /* tracking-wide ≈ slight spacing without uppercase vibe */
+}
+
+/* DISABLED */
+.btn-disabled {
+  @apply opacity-40 cursor-not-allowed pointer-events-none;
+}
+
+/* BLUE LINK */
+.btn-link-blue {
+  @apply text-[#2563EB] hover:text-[#1e4ed8]
+    text-xs md:text-sm font-inter uppercase tracking-[0.25em]
+    transition-colors
+    disabled:text-black/40 disabled:opacity-60 disabled:cursor-not-allowed;
+}

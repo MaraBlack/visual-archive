@@ -1,0 +1,86 @@
+/* ================================
+   TYPOGRAPHY SYSTEM
+   The Visual Archive
+   ================================ */
+
+/*  HERO / PAGE TITLES  */
+
+/* Home page "maria / the visual archive" */
+.typ-hero-title {
+  @apply font-space lowercase leading-[0.9]
+    text-[6vw] sm:text-[5vw] md:text-[4vw] lg:text-[3vw];
+}
+
+/* Page titles like "COLLECTION", "ABOUT" */
+.typ-page-title {
+  @apply font-inter uppercase tracking-[0.25em]
+    text-lg sm:text-xl md:text-2xl lg:text-3xl text-black;
+}
+
+/* Section labels like "Information", "Get in touch" */
+.typ-section-title {
+  @apply font-space text-lg md:text-xl text-black;
+}
+
+/*  LABELS / META  */
+
+/* Small uppercase label (e.g. "UPLOAD AND MANAGE ARTWORK") */
+.typ-kicker {
+  @apply font-inter uppercase tracking-[0.25em]
+    text-[0.65rem] sm:text-[0.7rem] text-black/40;
+}
+
+/* Meta label (e.g. "ARTWORK TITLE", "MEDIUM", "YEAR") */
+.typ-meta-label {
+  @apply font-inter uppercase tracking-[0.15em]
+    text-xs md:text-sm text-black/40;
+}
+
+/* Strong meta value (e.g. the actual title, key, year in sidebar) */
+.typ-meta-value {
+  @apply font-inter uppercase tracking-[0.12em]
+    text-xs sm:text-sm md:text-base lg:text-lg text-black/80;
+}
+
+/*  BODY TEXT  */
+
+/* Default paragraph */
+.typ-body {
+  @apply font-inter text-sm md:text-base text-black/80 leading-relaxed;
+}
+
+/* Slightly muted body (descriptions, secondary paragraphs) */
+.typ-body-muted {
+  @apply font-inter text-sm md:text-base text-black/60 leading-relaxed;
+}
+
+/* Small caption / helper text (forms, notes) */
+.typ-caption {
+  @apply font-inter text-[0.7rem] sm:text-xs text-black/40 leading-relaxed;
+}
+
+/*  NAVIGATION / FILTERS / LINKS  */
+
+/* Top navigation links (HOME / COLLECTION / ABOUT) */
+.typ-nav-link {
+  @apply font-inter uppercase tracking-[0.25em]
+    text-[0.65rem] sm:text-[0.7rem] text-black/60
+    hover:text-black transition-colors;
+}
+
+.typ-nav-link-active {
+  @apply text-[#2563EB];
+}
+
+/* Filter buttons text ("ALL", "DIGITAL", "SKETCHBOOK") */
+.typ-filter {
+  @apply font-inter uppercase tracking-[0.12em]
+    text-xs md:text-sm;
+}
+
+/* Blue link (used in not-found & possibly elsewhere) */
+.typ-link-blue {
+  @apply font-inter uppercase tracking-[0.25em]
+    text-xs md:text-sm text-[#2563EB] hover:text-[#1e4ed8]
+    transition-colors;
+}

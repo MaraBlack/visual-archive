@@ -33,6 +33,14 @@
   color: #2563eb;
 }
 
+.filter-btn.active:hover {
+  color: #2563eb;
+}
+
+.spinner-sm {
+  @apply inline-block h-4 w-4 rounded-full border border-black/20 border-t-transparent animate-spin;
+}
+
 /* Secțiune generală */
 @keyframes collection-enter {
   0% {
