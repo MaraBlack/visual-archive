@@ -1,0 +1,37 @@
+/* PRIMARY – main action (bold but minimal) */
+.btn-primary {
+  @apply inline-flex items-center justify-center
+    px-6 py-2 rounded-sm
+    text-xs md:text-sm font-inter uppercase tracking-[0.25em]
+    border border-black/20
+    hover:bg-black hover:text-white
+    transition-all cursor-pointer;
+}
+
+/* SECONDARY – subtle neutral button */
+.btn-secondary {
+  @apply inline-flex items-center justify-center
+    px-6 py-2 rounded-sm
+    text-xs md:text-sm font-inter uppercase tracking-[0.25em]
+    text-black/60 hover:text-black
+    transition-colors cursor-pointer;
+}
+
+/* GHOST – ultra-light text link (used for prev/next) */
+.btn-ghost {
+  @apply text-black/40 hover:text-black
+    text-xs md:text-sm font-inter uppercase tracking-[0.15em]
+    transition-colors cursor-pointer;
+}
+
+/* DISABLED */
+.btn-disabled {
+  @apply opacity-40 cursor-not-allowed pointer-events-none;
+}
+
+/* BLUE text link (like your filter color) */
+.link-blue {
+  @apply text-[#2563EB] hover:text-[#1e4ed8]
+    text-xs md:text-sm font-inter uppercase tracking-[0.25em]
+    transition-colors;
+}

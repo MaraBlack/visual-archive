@@ -1,76 +1,109 @@
-import { Component, HostListener, OnDestroy } from '@angular/core';
+import { Component, HostListener, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterModule, ParamMap } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { ITEMS } from '../collection/mock/collection-data';
+import {
+  ActivatedRoute,
+  Router,
+  RouterModule,
+  ParamMap,
+} from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CollectionService } from '../../core/services/collection.service';
+import { CollectionItem } from '../../core/models/models';
 
 @Component({
-    selector: 'app-artwork-detail',
-    standalone: true,
-    imports: [CommonModule, RouterModule],
-    templateUrl: './artwork-detail.page.html',
-    styleUrls: ['./artwork-detail.page.css']
+  selector: 'app-artwork-detail',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  templateUrl: './artwork-detail.page.html',
+  styleUrls: ['./artwork-detail.page.css'],
 })
-export class ArtworkDetailPage implements OnDestroy {
-    item: any = null;
-    itemsForKey: any[] = [];
-    index = 0;
-    sub: Subscription;
-    contextKey: string = 'all';
+export class ArtworkDetailPage {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly collectionService = inject(CollectionService);
 
-    constructor(private route: ActivatedRoute, private router: Router) {
-        this.sub = this.route.paramMap.subscribe((pm: ParamMap) => {
-            const key = (pm.get('key') || '').trim().toLowerCase();
-            const id = pm.get('id');
-            this.contextKey = key || 'all';
+  item: CollectionItem | null = null;
+  itemsForKey: CollectionItem[] = [];
+  index = 0;
+  contextKey: string = 'all';
 
-            // Use the key param to determine the current filtered set; fall back to all items
-            if (this.contextKey !== 'all') {
-                this.itemsForKey = ITEMS.filter(i => i.key === this.contextKey);
-            } else {
-                this.itemsForKey = ITEMS.slice();
-            }
+  constructor() {
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((pm: ParamMap) => {
+        const key = (pm.get('key') || '').trim().toLowerCase();
+        const id = pm.get('id');
+        this.contextKey = key || 'all';
 
-            this.index = this.itemsForKey.findIndex(i => i.id === id);
-            if (this.index === -1) {
-                // not found -> go back to collection
-                this.router.navigate(['/collection', 'all']);
+        if (!id) {
+          this.router.navigate(['/collection', this.contextKey]);
+          return;
+        }
+
+        // Load all items for this key from Firestore, then find the current one by id
+        const effectiveKey = this.contextKey === 'all' ? null : this.contextKey;
+
+        this.collectionService
+          .getAllForKey(effectiveKey)
+          .subscribe({
+            next: (items) => {
+              this.itemsForKey = items;
+              this.index = this.itemsForKey.findIndex((i) => i.id === id);
+
+              if (this.index === -1) {
+                // old behavior:
+                // this.router.navigate(['/collection', this.contextKey]);
+                // new behavior:
+                this.router.navigate(['/not-found'], {
+                  queryParams: {
+                    fromKey: this.contextKey || 'all',
+                  },
+                });
                 return;
-            }
-            this.item = this.itemsForKey[this.index];
-        });
-    }
+              }
 
-    ngOnDestroy(): void {
-        this.sub.unsubscribe();
-    }
+              this.item = this.itemsForKey[this.index];
+            },
+            error: (err) => {
+              console.error('[ArtworkDetail] Failed to load items', err);
+              this.router.navigate(['/not-found']);
+            },
+          });
+      });
 
-    prev() {
-        if (this.index > 0) {
-            this.index -= 1;
-            this.navigateToIndex();
-        }
-    }
+  }
 
-    next() {
-        if (this.index < this.itemsForKey.length - 1) {
-            this.index += 1;
-            this.navigateToIndex();
-        }
+  prev() {
+    if (this.index > 0) {
+      this.index -= 1;
+      this.navigateToIndex();
     }
+  }
 
-    navigateToIndex() {
-        const it = this.itemsForKey[this.index];
-        this.router.navigate(['/collection', this.contextKey, it.id]);
+  next() {
+    if (this.index < this.itemsForKey.length - 1) {
+      this.index += 1;
+      this.navigateToIndex();
     }
+  }
 
-    goBack() {
-        this.router.navigate(['/collection', this.contextKey || 'all']);
-    }
+  navigateToIndex() {
+    const it = this.itemsForKey[this.index];
+    this.item = it;
+    // Keep URL in sync with the new id
+    this.router.navigate(['/collection', this.contextKey, it.id], {
+      replaceUrl: true,
+    });
+  }
 
-    @HostListener('window:keydown', ['$event'])
-    handleKey(e: KeyboardEvent) {
-        if (e.key === 'ArrowLeft') this.prev();
-        if (e.key === 'ArrowRight') this.next();
-    }
+  goBack() {
+    this.router.navigate(['/collection', this.contextKey || 'all']);
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  handleKey(e: KeyboardEvent) {
+    if (e.key === 'ArrowLeft') this.prev();
+    if (e.key === 'ArrowRight') this.next();
+  }
 }
